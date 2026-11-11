@@ -7,7 +7,10 @@
   "scripts": {
     "dev": "mastra dev",
     "build": "mastra build",
-    "start": "mastra start"
+    "start": "mastra start",
+    "research": "tsx scripts/run-research.ts",
+    "research:resume": "tsx scripts/resume-research.ts",
+    "ask": "tsx scripts/ask.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,15 +20,17 @@
     "node": ">=22.13.0"
   },
   "dependencies": {
+    "@libsql/client": "^0.18.0",
     "@mastra/core": "1.82.0",
     "@mastra/duckdb": "1.18.0",
     "@mastra/libsql": "1.29.0",
     "@mastra/memory": "1.41.0",
     "@mastra/observability": "1.23.1",
+    "tsx": "^4.23.15",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/node": "latest",
+    "@types/node": "^26.6.6",
     "mastra": "1.38.0",
     "typescript": "^6.0.3"
   }
