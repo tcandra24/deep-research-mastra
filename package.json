@@ -21,11 +21,14 @@
   },
   "dependencies": {
     "@libsql/client": "^0.18.0",
+    "@mastra/auth-neon": "^0.3.5",
     "@mastra/core": "1.82.0",
     "@mastra/duckdb": "1.18.0",
     "@mastra/libsql": "1.29.0",
     "@mastra/memory": "1.41.0",
     "@mastra/observability": "1.23.1",
+    "@mastra/pg": "^1.35.0",
+    "jose": "^6.2.17",
     "tsx": "^4.23.15",
     "zod": "^4.4.3"
   },

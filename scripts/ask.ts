@@ -1,8 +1,9 @@
 import "dotenv/config";
 import { createInterface } from "node:readline/promises";
+import { RequestContext } from "@mastra/core/request-context";
 import { mastra } from "../src/mastra";
 import { RESOURCE_ID } from "../src/mastra/config";
-import { getReport } from "../src/mastra/lib/research-store";
+import { getReportForUser } from "../src/mastra/lib/research-store";
 
 async function main() {
   const reportId = process.argv[2];
@@ -11,7 +12,7 @@ async function main() {
     process.exit(1);
   }
 
-  const saved = await getReport(reportId);
+  const saved = await getReportForUser(reportId, RESOURCE_ID);
   if (!saved) {
     console.error(`Laporan ${reportId} tidak ditemukan.`);
     process.exit(1);
@@ -25,6 +26,10 @@ async function main() {
   // Satu resource per pengguna: preferensi (working memory) dibagi ke semua thread.
   const memory = { resource: RESOURCE_ID, thread: reportId };
 
+  // Tool Q&A hanya membaca laporan milik pengguna dari requestContext.
+  const requestContext = new RequestContext();
+  requestContext.set("userId", RESOURCE_ID);
+
   const rl = createInterface({ input: process.stdin, output: process.stdout });
   const lines = rl[Symbol.asyncIterator]();
 
@@ -34,7 +39,7 @@ async function main() {
     const question = next.done ? "" : String(next.value).trim();
     if (!question) break;
 
-    const result = await agent.generate(`Laporan: ${reportId}\nPertanyaan: ${question}`, { memory });
+    const result = await agent.generate(`Laporan: ${reportId}\nPertanyaan: ${question}`, { memory, requestContext });
     console.log(`\n${result.text}\n`);
   }
 

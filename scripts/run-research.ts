@@ -1,6 +1,8 @@
 import "dotenv/config";
 import { createInterface } from "node:readline/promises";
 import { mastra } from "../src/mastra";
+import { RESOURCE_ID } from "../src/mastra/config";
+import { saveRun } from "../src/mastra/lib/research-store";
 import { APPROVE_STEP_ID, printOutcome, promptDecision, readPlan, toResumeData } from "./decide";
 
 async function main() {
@@ -12,7 +14,12 @@ async function main() {
 
   const workflow = mastra.getWorkflow("deepResearchWorkflow");
   const run = await workflow.createRun();
-  let result = await run.start({ inputData: { topic } });
+
+  // Catat pemilik run agar laporannya bisa dibaca lewat `npm run ask`
+  // (kepemilikan laporan ditentukan lewat tabel research_runs).
+  await saveRun({ runId: run.runId, userId: RESOURCE_ID, topic });
+
+  let result = await run.start({ inputData: { topic, userId: RESOURCE_ID } });
 
   if (result.status === "suspended") {
     const plan = readPlan(result.steps);

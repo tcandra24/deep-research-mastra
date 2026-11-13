@@ -12,3 +12,8 @@ src/mastra/public/
 .vercel
 *.duckdb
 *.duckdb.wal
+
+mastra.db*
+web/node_modules
+web/dist
+
