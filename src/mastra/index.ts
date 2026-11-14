@@ -19,10 +19,7 @@ const corsOrigins = (process.env.CORS_ORIGINS ?? "http://localhost:5173")
 export const mastra = new Mastra({
   agents: { researcherAgent, plannerAgent, writerAgent, reviewerAgent, qaAgent, chiefSportAgent },
   workflows: { deepResearchWorkflow },
-
-  // Satu storage bersama untuk workflow dan memory (lihat storage.ts).
   storage,
-
   server: {
     port: Number(process.env.PORT) || 4111,
     host: process.env.HOST ?? "0.0.0.0",
