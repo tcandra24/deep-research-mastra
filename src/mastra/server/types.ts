@@ -25,4 +25,6 @@ export type RunDTO = {
   report?: string;
   reportId?: string;
   error?: string;
+  // true jika run berstatus berjalan tetapi tidak ada kemajuan cukup lama
+  stale?: boolean;
 };

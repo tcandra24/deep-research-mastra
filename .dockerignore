@@ -1,0 +1,8 @@
+node_modules
+.mastra
+.env
+.env.*
+mastra.db*
+web
+scripts
+.git

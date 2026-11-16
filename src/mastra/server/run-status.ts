@@ -48,6 +48,11 @@ function toRunStatus(raw: unknown): RunStatus {
   }
 }
 
+// Run dianggap terhenti jika berstatus "berjalan" tetapi snapshot-nya tidak
+// diperbarui selama batas ini. Setiap step yang selesai memperbarui snapshot,
+// jadi batasnya harus lebih lama dari step terpanjang.
+const STALE_MS = Number(process.env.STALE_RUN_MINUTES ?? 15) * 60_000;
+
 type StepState = { status?: unknown; suspendPayload?: unknown; error?: unknown };
 
 // Kepemilikan run HARUS sudah diverifikasi oleh pemanggil.
@@ -76,6 +81,11 @@ export async function buildRunDTO(mastra: Mastra, run: RunRecord): Promise<RunDT
   }
 
   const dto: RunDTO = { runId: run.runId, topic: run.topic, status, steps };
+
+  const updatedAt = state.updatedAt ? new Date(state.updatedAt).getTime() : NaN;
+  if (status === "running" && Number.isFinite(updatedAt) && Date.now() - updatedAt > STALE_MS) {
+    dto.stale = true;
+  }
 
   if (status === "suspended") {
     const payload = stepStates["approve-plan"]?.suspendPayload as { reason?: string; topic?: string; subQuestions?: string[] } | undefined;
